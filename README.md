@@ -1,5 +1,7 @@
 # GigScore
 
+![CreditWise demo](demo.jpg)
+
 A scoring tool that turns gig earnings into something lenders can use.
 
 ## The Problem
