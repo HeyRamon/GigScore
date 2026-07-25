@@ -1,8 +1,0 @@
-# GigScore runs on the Python 3.10+ standard library alone — sqlite3,
-# statistics, json, http.server, unittest. Nothing to install for the demo.
-#
-# Optional extras:
-#   anthropic     # only if you wire the EXPLAIN polish pass through the SDK
-#                 # (the repo uses stdlib urllib against the Messages API,
-#                 #  enabled by setting ANTHROPIC_API_KEY)
-#   aws-sam-cli   # only to validate/deploy infra/template.yaml
