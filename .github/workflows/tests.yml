@@ -9,4 +9,4 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install pytest
-      - run: cd src/gigscore/score && pytest ../../../tests/scoring/ -v
+      - run: PYTHONPATH=/home/runner/work/GigScore/GigScore/src/gigscore/score pytest tests/scoring/ -v
