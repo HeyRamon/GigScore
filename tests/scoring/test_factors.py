@@ -4,6 +4,9 @@ Validates factor level assignment from metrics.
 """
 
 import pytest
+import sys
+sys.path.insert(0, 'src/gigscore/score')
+
 from factors import (
     assign_rent_level,
     assign_consistency_level,
@@ -39,7 +42,7 @@ class TestRentLevel:
     def test_missed_rent_is_needs_work(self):
         """Any missed payment overrides to Needs Work."""
         thresholds = {"rent_excellent_months": 12, "rent_good_months": 6}
-        level, why = assign_rent_level(thresholds, 24, True)  # Even 24 months
+        level, why = assign_rent_level(thresholds, 24, True)
         assert level == "NEEDS_WORK"
         assert "missed" in why.lower()
 
@@ -135,7 +138,7 @@ class TestTrajectoryLevel:
 
     def test_trending_up_is_good(self):
         """Recent weeks higher than early weeks is Good."""
-        weekly_amounts = [500, 600, 1100, 1200]  # Last 2 > first 2
+        weekly_amounts = [500, 600, 1100, 1200]
         level, why = assign_trajectory_level(None, weekly_amounts)
         assert level == "GOOD"
         assert "trending up" in why.lower()
@@ -154,7 +157,7 @@ class TestTrajectoryLevel:
 
     def test_insufficient_data_is_fair(self):
         """Less than 4 weeks of data is Fair (not Excellent)."""
-        level, why = assign_trajectory_level(None, [1000, 2000])  # Only 2 weeks
+        level, why = assign_trajectory_level(None, [1000, 2000])
         assert level == "FAIR"
 
 

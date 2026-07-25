@@ -4,6 +4,9 @@ Validates that all constants are defined, consistent, and match the scoring rang
 """
 
 import pytest
+import sys
+sys.path.insert(0, 'src/gigscore/score')
+
 from scoring_config import (
     FACTORS,
     SCORE_MIN,
@@ -89,7 +92,6 @@ class TestLevels:
         for key, display in LEVELS.items():
             assert display
             assert len(display) > 0
-            # Display names should start with capital letter
             assert display[0].isupper()
 
 
@@ -99,13 +101,12 @@ class TestDiversity:
     def test_diversity_levels_are_ordered(self):
         """Diversity levels decrease with fewer sources."""
         thresholds = sorted(DIVERSITY_LEVELS.keys(), reverse=True)
-        assert thresholds[0] == 5  # Excellent at 5 sources
-        assert thresholds[-1] == 2  # Fair at 2 sources
+        assert thresholds[0] == 5
+        assert thresholds[-1] == 2
 
     def test_diversity_points_calculation(self):
         """Max diversity points = points per source * cap."""
         max_diversity = DIVERSITY_POINTS_PER_SOURCE * DIVERSITY_SOURCE_CAP
-        # Should be 90 (the factor's max)
         assert max_diversity == 90
 
     def test_diversity_cap_is_positive(self):
@@ -183,6 +184,5 @@ class TestConsistency:
 
     def test_all_level_keys_in_dictionary(self):
         """Every level key that factors might use is defined."""
-        # If we see NEEDS_WORK, FAIR, GOOD, EXCELLENT in tests, they're all in LEVELS
         required_levels = {"NEEDS_WORK", "FAIR", "GOOD", "EXCELLENT"}
         assert required_levels.issubset(set(LEVELS.keys()))
