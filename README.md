@@ -112,7 +112,7 @@ pytest tests/scoring/ -v
 
 - **Language**: Python 3.10+, JavaScript, SQL
 - **Dependencies**: None for the demo (stdlib only: sqlite3, json, http.server, statistics)
-- **Testing**: pytest, 171 tests, 92–99% coverage on business logic
+- **Testing**: pytest, 66 tests, 95%+ coverage on scoring config
 - **Frontend**: Semantic HTML, CSS design tokens, accessibility (aria labels, focus rings, reduced motion)
 - **Database**: SQLite for weights and audit trail
 
