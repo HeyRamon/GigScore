@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "as_of": "2026-07-20T14:00:00Z",
+  "members": [
+    {
+      "user_id": "usr_maya",
+      "name": "Maya Reyes",
+      "score": 642,
+      "band": "Fair",
+      "baseline": 634,
+      "week_delta": 8,
+      "updated_line": "Updated 2 min ago \u00b7 DoorDash payout received",
+      "factors": [
+        {
+          "label": "Rent & subscriptions",
+          "status": "Excellent",
+          "driver": "reported on time, 12 months",
+          "points": 140
+        },
+        {
+          "label": "Earnings consistency",
+          "status": "Good",
+          "driver": "steady weekly payouts",
+          "points": 90
+        },
+        {
+          "label": "Platform diversity",
+          "status": "Good",
+          "driver": "3 income sources connected",
+          "points": 54
+        },
+        {
+          "label": "Income trajectory",
+          "status": "Needs work",
+          "driver": "Tuesday gap detected",
+          "points": 50
+        }
+      ],
+      "next_milestone": {
+        "threshold": 680,
+        "product": "Platinum Secured auto-review",
+        "detail": "Refundable deposit from $49 \u00b7 reports to all 3 bureaus"
+      },
+      "gap_to_next": 38,
+      "unlocked": [],
+      "coach": {
+        "headline": "Your Tuesday earnings gap is the #1 drag on your score right now.",
+        "how_to_improve": "Two steady Tuesdays \u2248 +12 pts. Keep any two consecutive Tuesdays within 20% of your weekly average.",
+        "why_important": "A recurring Tuesday with little or no verified income reads as volatility to underwriting models. Filling it is the single fastest way to raise your Income trajectory factor.",
+        "reason_code": "GS-11 \u00b7 Irregular earnings pattern on one or more weekdays",
+        "model": "deterministic-template"
+      },
+      "recent_wins": [
+        {
+          "delta": "+5",
+          "label": "Rent reported on time"
+        },
+        {
+          "delta": "+3",
+          "label": "4-week consistency streak"
+        }
+      ],
+      "ledger": [
+        {
+          "event_type": "rent_reported_on_time",
+          "delta": 5,
+          "occurred_at": "2026-07-15T09:00:00Z"
+        },
+        {
+          "event_type": "consistency_streak_4wk",
+          "delta": 3,
+          "occurred_at": "2026-07-19T18:00:00Z"
+        }
+      ],
+      "accounts": [
+        {
+          "key": "uber",
+          "name": "Uber",
+          "sub": "Rideshare \u00b7 since 2022",
+          "connected": true
+        },
+        {
+          "key": "doordash",
+          "name": "DoorDash",
+          "sub": "Delivery \u00b7 since 2023",
+          "connected": true
+        },
+        {
+          "key": "lyft",
+          "name": "Lyft",
+          "sub": "Rideshare",
+          "connected": false
+        },
+        {
+          "key": "instacart",
+          "name": "Instacart",
+          "sub": "Delivery",
+          "connected": false
+        },
+        {
+          "key": "chase",
+          "name": "Chase \u00b7\u00b7\u00b7\u00b74417",
+          "sub": "Bank & rent \u2014 via Plaid",
+          "connected": true
+        }
+      ],
+      "sources_connected": 3,
+      "sources_total": 5
+    },
+    {
+      "user_id": "usr_priya",
+      "name": "Priya Shah",
+      "score": 685,
+      "band": "Good",
+      "baseline": 670,
+      "week_delta": 15,
+      "updated_line": "Updated 16 hr ago \u00b7 DoorDash payout received",
+      "factors": [
+        {
+          "label": "Rent & subscriptions",
+          "status": "Excellent",
+          "driver": "reported on time, 12 months",
+          "points": 140
+        },
+        {
+          "label": "Earnings consistency",
+          "status": "Good",
+          "driver": "steady weekly payouts",
+          "points": 90
+        },
+        {
+          "label": "Platform diversity",
+          "status": "Excellent",
+          "driver": "5 income sources connected",
+          "points": 90
+        },
+        {
+          "label": "Income trajectory",
+          "status": "Needs work",
+          "driver": "Tuesday gap detected",
+          "points": 50
+        }
+      ],
+      "next_milestone": {
+        "threshold": 720,
+        "product": "Quicksilver unsecured pre-approval",
+        "detail": "No deposit \u00b7 1.5% cash back on every purchase"
+      },
+      "gap_to_next": 35,
+      "unlocked": [
+        {
+          "threshold": 680,
+          "product": "Platinum Secured auto-review",
+          "detail": "Refundable deposit from $49 \u00b7 reports to all 3 bureaus"
+        }
+      ],
+      "coach": {
+        "headline": "Your steady-Tuesday pair just posted +12 pts \u2014 the gap is closing.",
+        "how_to_improve": "Keep Tuesdays within 20% of your weekly average and this factor upgrades at your next monthly settlement.",
+        "why_important": "Lenders read a recurring quiet Tuesday as income risk. Two steady Tuesdays in a row is the first proof the pattern has changed.",
+        "reason_code": "GS-11 \u00b7 Irregular earnings pattern on one or more weekdays",
+        "model": "deterministic-template"
+      },
+      "recent_wins": [
+        {
+          "delta": "+12",
+          "label": "Two steady Tuesdays"
+        },
+        {
+          "delta": "+3",
+          "label": "4-week consistency streak"
+        }
+      ],
+      "ledger": [
+        {
+          "event_type": "consistency_streak_4wk",
+          "delta": 3,
+          "occurred_at": "2026-07-19T18:00:00Z"
+        },
+        {
+          "event_type": "steady_tuesday_pair",
+          "delta": 12,
+          "occurred_at": "2026-07-19T18:00:00Z"
+        }
+      ],
+      "accounts": [
+        {
+          "key": "uber",
+          "name": "Uber",
+          "sub": "Rideshare \u00b7 since 2021",
+          "connected": true
+        },
+        {
+          "key": "doordash",
+          "name": "DoorDash",
+          "sub": "Delivery \u00b7 since 2022",
+          "connected": true
+        },
+        {
+          "key": "lyft",
+          "name": "Lyft",
+          "sub": "Rideshare \u00b7 since 2023",
+          "connected": true
+        },
+        {
+          "key": "instacart",
+          "name": "Instacart",
+          "sub": "Delivery \u00b7 since 2024",
+          "connected": true
+        },
+        {
+          "key": "chase",
+          "name": "Chase \u00b7\u00b7\u00b7\u00b79052",
+          "sub": "Bank & rent \u2014 via Plaid",
+          "connected": true
+        }
+      ],
+      "sources_connected": 5,
+      "sources_total": 5
+    },
+    {
+      "user_id": "usr_devon",
+      "name": "Devon King",
+      "score": 506,
+      "band": "Needs work",
+      "baseline": 521,
+      "week_delta": -15,
+      "updated_line": "Updated 26 hr ago \u00b7 Uber payout received",
+      "factors": [
+        {
+          "label": "Rent & subscriptions",
+          "status": "Needs work",
+          "driver": "missed payment reported",
+          "points": 30
+        },
+        {
+          "label": "Earnings consistency",
+          "status": "Fair",
+          "driver": "weekly payouts vary",
+          "points": 60
+        },
+        {
+          "label": "Platform diversity",
+          "status": "Fair",
+          "driver": "2 income sources connected",
+          "points": 36
+        },
+        {
+          "label": "Income trajectory",
+          "status": "Fair",
+          "driver": "earnings holding steady",
+          "points": 95
+        }
+      ],
+      "next_milestone": {
+        "threshold": 680,
+        "product": "Platinum Secured auto-review",
+        "detail": "Refundable deposit from $49 \u00b7 reports to all 3 bureaus"
+      },
+      "gap_to_next": 174,
+      "unlocked": [],
+      "coach": {
+        "headline": "On-time rent reporting is the biggest lever on your score.",
+        "how_to_improve": "Each on-time month reported \u2248 +5 pts and builds bureau-ready history.",
+        "why_important": "Housing payments are the strongest classic-credit signal gig workers already generate \u2014 reporting them turns rent you pay anyway into score history.",
+        "reason_code": "GS-14 \u00b7 Insufficient on-time housing payment history",
+        "model": "deterministic-template"
+      },
+      "recent_wins": [],
+      "ledger": [
+        {
+          "event_type": "rent_payment_missed",
+          "delta": -15,
+          "occurred_at": "2026-07-14T09:00:00Z"
+        }
+      ],
+      "accounts": [
+        {
+          "key": "uber",
+          "name": "Uber",
+          "sub": "Rideshare \u00b7 since 2024",
+          "connected": true
+        },
+        {
+          "key": "doordash",
+          "name": "DoorDash",
+          "sub": "Delivery",
+          "connected": false
+        },
+        {
+          "key": "lyft",
+          "name": "Lyft",
+          "sub": "Rideshare",
+          "connected": false
+        },
+        {
+          "key": "instacart",
+          "name": "Instacart",
+          "sub": "Delivery",
+          "connected": false
+        },
+        {
+          "key": "chase",
+          "name": "Chase \u00b7\u00b7\u00b7\u00b72210",
+          "sub": "Bank & rent \u2014 via Plaid",
+          "connected": true
+        }
+      ],
+      "sources_connected": 2,
+      "sources_total": 5
+    },
+    {
+      "user_id": "usr_andre",
+      "name": "Andre Okafor",
+      "score": 678,
+      "band": "Good",
+      "baseline": 671,
+      "week_delta": 7,
+      "updated_line": "Updated 40 hr ago \u00b7 DoorDash payout received",
+      "factors": [
+        {
+          "label": "Rent & subscriptions",
+          "status": "Good",
+          "driver": "reported on time, 8 months",
+          "points": 105
+        },
+        {
+          "label": "Earnings consistency",
+          "status": "Good",
+          "driver": "steady weekly payouts",
+          "points": 90
+        },
+        {
+          "label": "Platform diversity",
+          "status": "Fair",
+          "driver": "2 income sources connected",
+          "points": 36
+        },
+        {
+          "label": "Income trajectory",
+          "status": "Good",
+          "driver": "earnings trending up",
+          "points": 140
+        }
+      ],
+      "next_milestone": {
+        "threshold": 680,
+        "product": "Platinum Secured auto-review",
+        "detail": "Refundable deposit from $49 \u00b7 reports to all 3 bureaus"
+      },
+      "gap_to_next": 2,
+      "unlocked": [],
+      "coach": {
+        "headline": "Adding one more verified income source is your fastest win.",
+        "how_to_improve": "Connect a second platform \u2248 +4 pts now, more at your next monthly settlement.",
+        "why_important": "Each verified source is an independent proof of income. More sources = a stronger, steadier score.",
+        "reason_code": "GS-13 \u00b7 Limited number of verified income sources",
+        "model": "deterministic-template"
+      },
+      "recent_wins": [
+        {
+          "delta": "+4",
+          "label": "New income source connected"
+        },
+        {
+          "delta": "+3",
+          "label": "4-week consistency streak"
+        }
+      ],
+      "ledger": [
+        {
+          "event_type": "source_connected",
+          "delta": 4,
+          "occurred_at": "2026-07-16T10:12:00Z"
+        },
+        {
+          "event_type": "consistency_streak_4wk",
+          "delta": 3,
+          "occurred_at": "2026-07-19T18:00:00Z"
+        }
+      ],
+      "accounts": [
+        {
+          "key": "uber",
+          "name": "Uber",
+          "sub": "Rideshare",
+          "connected": false
+        },
+        {
+          "key": "doordash",
+          "name": "DoorDash",
+          "sub": "Delivery \u00b7 since 2020",
+          "connected": true
+        },
+        {
+          "key": "lyft",
+          "name": "Lyft",
+          "sub": "Rideshare",
+          "connected": false
+        },
+        {
+          "key": "instacart",
+          "name": "Instacart",
+          "sub": "Delivery \u00b7 connected Jul 16",
+          "connected": true
+        },
+        {
+          "key": "chase",
+          "name": "Chase \u00b7\u00b7\u00b7\u00b77731",
+          "sub": "Bank & rent \u2014 via Plaid",
+          "connected": true
+        }
+      ],
+      "sources_connected": 3,
+      "sources_total": 5
+    }
+  ]
+}

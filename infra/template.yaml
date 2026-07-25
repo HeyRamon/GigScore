@@ -1,0 +1,145 @@
+# GigScore — event-driven serverless on AWS (pitch slide 8, as infrastructure).
+#
+#   API Gateway ── IngestFn ──▶ EventBridge "gigscore" bus
+#                                   ├─▶ NormalizeFn ──▶ Aurora canonical_ledger
+#                                   ├─▶ ScoreFn     (payout / rent / connect / monthly settle)
+#                                   └─▶ ExplainFn   ──▶ Aurora audit_log ──▶ CreditWise surface
+#
+# This template is the deploy target for the exact handlers in src/gigscore/;
+# the local demo (demo/run_demo.py) runs the same four phases in-process.
+# `sam validate && sam deploy --guided` once platform webhook credentials exist.
+
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: GigScore credit-readiness pipeline (INGEST -> NORMALIZE -> SCORE -> EXPLAIN)
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 30
+    MemorySize: 256
+    Environment:
+      Variables:
+        DB_CLUSTER_ARN: !GetAtt LedgerDB.DBClusterArn
+        DB_SECRET_ARN: !Ref LedgerDBSecret
+        EVENT_BUS: !Ref GigScoreBus
+
+Resources:
+  # ------------------------------------------------------------ INGEST
+  # Python webhook listeners, AWS Lambda triggers
+  WebhookApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+
+  IngestFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: gigscore.ingest.webhook_listener.lambda_handler
+      CodeUri: ../src/
+      Description: Verifies platform webhook signatures, stamps envelopes, emits to the bus
+      Events:
+        UberWebhook:      {Type: Api, Properties: {RestApiId: !Ref WebhookApi, Path: /webhooks/uber,      Method: post}}
+        DoorDashWebhook:  {Type: Api, Properties: {RestApiId: !Ref WebhookApi, Path: /webhooks/doordash,  Method: post}}
+        LyftWebhook:      {Type: Api, Properties: {RestApiId: !Ref WebhookApi, Path: /webhooks/lyft,      Method: post}}
+        InstacartWebhook: {Type: Api, Properties: {RestApiId: !Ref WebhookApi, Path: /webhooks/instacart, Method: post}}
+        PlaidWebhook:     {Type: Api, Properties: {RestApiId: !Ref WebhookApi, Path: /webhooks/plaid,     Method: post}}
+      Policies:
+        - EventBridgePutEventsPolicy: {EventBusName: !Ref GigScoreBus}
+
+  GigScoreBus:
+    Type: AWS::Events::EventBus
+    Properties:
+      Name: gigscore
+
+  # --------------------------------------------------------- NORMALIZE
+  # Python transforms data, AWS Lambda organizes
+  NormalizeFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: gigscore.normalize.transforms.lambda_handler
+      CodeUri: ../src/
+      Description: Source payload -> canonical ledger row (user, kind, amount, occurred_at)
+      Events:
+        RawEnvelope:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref GigScoreBus
+            Pattern: {detail-type: ["gigscore.raw"]}
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: [rds-data:ExecuteStatement, rds-data:BatchExecuteStatement]
+              Resource: !GetAtt LedgerDB.DBClusterArn
+        - EventBridgePutEventsPolicy: {EventBusName: !Ref GigScoreBus}
+
+  # ------------------------------------------------------------- SCORE
+  # Python rules engine, SQL-stored weights
+  ScoreFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: gigscore.pipeline.score_handler
+      CodeUri: ../src/
+      Description: Rules engine over canonical_ledger; weights read from SQL, never code
+      Events:
+        CanonicalRecord:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref GigScoreBus
+            Pattern: {detail-type: ["gigscore.canonical"]}
+        MonthlySettlement:
+          Type: Schedule
+          Properties: {Schedule: "cron(0 6 1 * ? *)"}   # factor levels re-settle monthly
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: [rds-data:ExecuteStatement]
+              Resource: !GetAtt LedgerDB.DBClusterArn
+        - EventBridgePutEventsPolicy: {EventBusName: !Ref GigScoreBus}
+
+  # ----------------------------------------------------------- EXPLAIN
+  # Python orchestrates LLM, SQL audit log
+  ExplainFn:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: gigscore.explain.orchestrator.lambda_handler
+      CodeUri: ../src/
+      Description: Deterministic coach copy + fact-locked LLM polish (Claude on Bedrock); audit row per change
+      Events:
+        ScoreChanged:
+          Type: EventBridgeRule
+          Properties:
+            EventBusName: !Ref GigScoreBus
+            Pattern: {detail-type: ["gigscore.scored"]}
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: [bedrock:InvokeModel]
+              Resource: "*"
+            - Effect: Allow
+              Action: [rds-data:ExecuteStatement]
+              Resource: !GetAtt LedgerDB.DBClusterArn
+
+  # ---------------------------------------------------------- STORAGE
+  LedgerDB:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      Engine: aurora-postgresql
+      EngineMode: provisioned
+      ServerlessV2ScalingConfiguration: {MinCapacity: 0.5, MaxCapacity: 4}
+      MasterUsername: gigscore
+      ManageMasterUserPassword: true
+      DatabaseName: gigscore   # canonical_ledger, factor_levels, event_rules,
+                               # score_bands, milestones, behavior_thresholds, audit_log
+
+  LedgerDBSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: gigscore/db
+      Description: Rotated DB credentials for the data API
+
+Outputs:
+  WebhookBaseUrl:
+    Value: !Sub "https://${WebhookApi}.execute-api.${AWS::Region}.amazonaws.com/prod/webhooks"
+  EventBusName:
+    Value: !Ref GigScoreBus

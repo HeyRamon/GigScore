@@ -1,0 +1,11 @@
+{
+  "ingest_id": "16ba7e8f-c4ce-43a8-9458-5ffb3143443c",
+  "ingested_at": "2026-05-11T11:30:00Z",
+  "source": "uber",
+  "raw": {
+    "user_id": "usr_priya",
+    "net_fare_total": 118.0,
+    "deposit_time": "2026-05-11T11:30:00Z",
+    "trip_count": 6
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "ingest_id": "21604cad-a838-4c2a-83b2-3138b0d2727a",
+  "ingested_at": "2026-05-13T21:45:00Z",
+  "source": "doordash",
+  "raw": {
+    "user_id": "usr_priya",
+    "dasher_payout": {
+      "amount_cents": 9500,
+      "paid_at": "2026-05-13T21:45:00Z",
+      "delivery_count": 5
+    }
+  }
+}

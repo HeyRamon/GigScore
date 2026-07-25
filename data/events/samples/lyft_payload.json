@@ -1,0 +1,13 @@
+{
+  "ingest_id": "e6130c02-e34f-4009-9ca8-857e087ad146",
+  "ingested_at": "2026-05-11T20:15:00Z",
+  "source": "lyft",
+  "raw": {
+    "user_id": "usr_priya",
+    "earnings": {
+      "total": 60.0,
+      "settled_at": "2026-05-11T20:15:00Z",
+      "ride_count": 3
+    }
+  }
+}

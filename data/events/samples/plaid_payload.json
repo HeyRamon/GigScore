@@ -1,0 +1,15 @@
+{
+  "ingest_id": "91bbf3c3-2893-4ea2-b05b-7def9ca39197",
+  "ingested_at": "2025-08-03T09:00:00Z",
+  "source": "plaid",
+  "raw": {
+    "user_id": "usr_priya",
+    "amount": -1580,
+    "date": "2025-08-03T09:00:00Z",
+    "merchant_name": "Wicker Park Lofts",
+    "on_time": true,
+    "personal_finance_category": {
+      "primary": "RENT_AND_UTILITIES"
+    }
+  }
+}

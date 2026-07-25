@@ -1,0 +1,1033 @@
+/* =============================================================================
+   GigScore - CreditWise demo
+   Presentation layer only. No values are duplicated in JavaScript: anything the
+   app changes at runtime is written to a custom property (--progress, --marker)
+   and consumed here.
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   1. Design tokens
+   Primitives are raw values with no opinion about use. Everything below the
+   primitives is semantic: components only ever reference semantic tokens, so a
+   rebrand touches this block and nothing else.
+   -------------------------------------------------------------------------- */
+:root {
+  /* --- color primitives --- */
+  --palette-navy-600: #0e3a5d;
+  --palette-navy-700: #0e2e4e;
+  --palette-navy-800: #253341;
+  --palette-slate-900: #1f2933;
+  --palette-slate-700: #3b4550;
+  --palette-slate-500: #6b7480;
+  --palette-slate-400: #98a1ab;
+  --palette-slate-300: #c6cbd1;
+  --palette-gray-100: #f4f5f7;
+  --palette-gray-150: #eef0f2;
+  --palette-gray-200: #e7e9ec;
+  --palette-gray-250: #e1e4e8;
+  --palette-gray-300: #d6dae0;
+  --palette-white: #ffffff;
+  --palette-black: #10131a;
+
+  --palette-green-600: #157a36;
+  --palette-green-500: #2f9e44;
+  --palette-green-200: #cbe7d2;
+  --palette-green-100: #e7f4ea;
+  --palette-green-050: #f4fbf6;
+  --palette-red-600: #c2311c;
+  --palette-red-500: #e0301e;
+  --palette-red-100: #fbe9e5;
+  --palette-amber-600: #b7791f;
+  --palette-blue-700: #2563a8;
+  --palette-blue-600: #2b6cb0;
+  --palette-blue-100: #dce9f7;
+  --palette-blue-200: #a8c6e0;
+
+  /* --- surfaces --- */
+  --surface-stage: var(--palette-navy-700);
+  --surface-app: var(--palette-gray-100);
+  --surface-card: var(--palette-white);
+  --surface-chrome: var(--palette-navy-600);
+  --surface-device: var(--palette-black);
+  --surface-success-subtle: var(--palette-green-100);
+  --surface-success-card: var(--palette-green-050);
+  --surface-danger-subtle: var(--palette-red-100);
+  --surface-info-subtle: var(--palette-blue-100);
+  --surface-neutral-subtle: var(--palette-gray-150);
+  --surface-track: var(--palette-gray-250);
+
+  /* --- text --- */
+  --text-primary: var(--palette-slate-900);
+  --text-secondary: var(--palette-slate-500);
+  --text-body: var(--palette-slate-700);
+  --text-inverse: var(--palette-white);
+  --text-inverse-muted: rgb(255 255 255 / 62%);
+  --text-inverse-soft: rgb(255 255 255 / 75%);
+  --text-on-chrome: #e8f0f7;
+  --text-brand-accent: var(--palette-blue-200);
+  --text-success: var(--palette-green-600);
+  --text-danger: var(--palette-red-600);
+  --text-warning: var(--palette-amber-600);
+  --text-link: var(--palette-blue-600);
+
+  /* --- borders --- */
+  --border-default: var(--palette-gray-200);
+  --border-subtle: var(--palette-gray-150);
+  --border-strong: var(--palette-gray-300);
+  --border-success: var(--palette-green-200);
+  --border-on-chrome: rgb(255 255 255 / 65%);
+  --border-on-chrome-subtle: rgb(255 255 255 / 42%);
+
+  /* --- accents --- */
+  --accent-brand-dot: var(--palette-red-500);
+  --accent-score: var(--palette-green-500);
+  --accent-progress: var(--palette-blue-600);
+  --accent-icon-muted: var(--palette-slate-400);
+
+  /* --- elevation --- */
+  --shadow-card: 0 1px 2px rgb(16 24 40 / 4%);
+  --shadow-device: 0 40px 90px rgb(0 0 0 / 55%), 0 6px 20px rgb(0 0 0 / 40%);
+
+  /* --- spacing: 4px baseline grid --- */
+  --space-1: 0.25rem;  /*  4px */
+  --space-2: 0.5rem;   /*  8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-7: 1.75rem;  /* 28px */
+  --space-9: 2.25rem;  /* 36px */
+
+  /* --- type scale --- */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-size-2xs: 0.625rem;   /* 10px - eyebrows, nav labels, status chips */
+  --font-size-xs: 0.75rem;     /* 12px - captions, secondary rows */
+  --font-size-sm: 0.8125rem;   /* 13px - dense body, buttons */
+  --font-size-base: 0.875rem;  /* 14px - row titles, coach body */
+  --font-size-lg: 1rem;        /* 16px - section titles, wordmark */
+  --font-size-xl: 1.1875rem;   /* 19px - page titles */
+  --font-size-display: 2.875rem; /* 46px - the score */
+  --font-weight-regular: 500;
+  --font-weight-medium: 600;
+  --font-weight-bold: 700;
+  --font-weight-black: 800;
+  --line-height-snug: 1.45;
+  --line-height-relaxed: 1.5;
+  --tracking-wide: 0.06em;
+  --tracking-wider: 0.13em;
+  --tracking-widest: 0.22em;
+
+  /* --- radii --- */
+  --radius-sm: 3px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-device: 56px;
+  --radius-screen: 46px;
+  --radius-pill: 999px;
+
+  /* --- component metrics --- */
+  --device-width: 392px;
+  --screen-height-max: 800px;
+  --screen-height-min: 520px;
+  --bar-height: 6px;
+}
+
+/* -----------------------------------------------------------------------------
+   2. Base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7) var(--space-4) var(--space-9);
+  font-family: var(--font-family-base);
+  background: var(--surface-stage);
+  color: var(--text-inverse);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+button {
+  font: inherit;
+}
+
+:where(button, [tabindex]):focus-visible {
+  outline: 2px solid var(--palette-blue-200);
+  outline-offset: 2px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* -----------------------------------------------------------------------------
+   3. Icons
+   The sprite itself never renders; it is kept in flow at zero size because some
+   browsers drop <use> references into a display:none subtree. Sizes live here so
+   the markup carries no presentational numbers, and two-tone icons receive their
+   palette through inheritable custom properties.
+   -------------------------------------------------------------------------- */
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.icon {
+  flex: none;
+  display: block;
+}
+
+.icon--signal { width: 17px; height: 11px; }
+.icon--wifi { width: 15px; height: 11px; }
+.icon--battery { width: 25px; height: 12px; }
+.icon--back { width: 11px; height: 19px; }
+.icon--chevron { width: 8px; height: 14px; }
+.icon--lock { width: 11px; height: 13px; }
+.icon--nav { width: 1.375rem; height: 1.375rem; }
+
+.icon--info {
+  width: 13px;
+  height: 13px;
+  color: var(--accent-icon-muted);
+}
+
+.icon--award {
+  width: 1.375rem;
+  height: 1.375rem;
+  --icon-primary: var(--text-success);
+  --icon-secondary: var(--surface-card);
+}
+
+/* -----------------------------------------------------------------------------
+   4. Stage - the slide the phone sits on
+   -------------------------------------------------------------------------- */
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.stage__eyebrow {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-widest);
+  color: var(--text-inverse-muted);
+}
+
+.stage__eyebrow strong {
+  color: var(--text-inverse);
+}
+
+.brand-dot {
+  color: var(--accent-brand-dot);
+}
+
+/* -----------------------------------------------------------------------------
+   5. Device frame
+   Scales by shrinking the real layout, not by zooming a fixed one, so text stays
+   sharp and the screen keeps its own scroll region on short viewports.
+   -------------------------------------------------------------------------- */
+.device {
+  flex: none;
+  width: min(var(--device-width), 100vw - var(--space-4));
+  padding: var(--space-3);
+  background: var(--surface-device);
+  border-radius: var(--radius-device);
+  box-shadow: var(--shadow-device);
+}
+
+.device__screen {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: clamp(
+    var(--screen-height-min),
+    100vh - 15rem,
+    var(--screen-height-max)
+  );
+  overflow: hidden;
+  border-radius: var(--radius-screen);
+  background: var(--surface-app);
+  color: var(--text-primary);
+}
+
+/* -----------------------------------------------------------------------------
+   6. App chrome - status bar, wordmark, tabs
+   -------------------------------------------------------------------------- */
+.app-header {
+  flex: none;
+  background: var(--surface-chrome);
+  color: var(--text-inverse);
+}
+
+.status-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.875rem;
+  padding: var(--space-2) var(--space-6) 0;
+}
+
+.status-bar__time {
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+}
+
+.status-bar__notch {
+  position: absolute;
+  left: 50%;
+  top: 0.5625rem;
+  transform: translateX(-50%);
+  width: 7rem;
+  height: 1.875rem;
+  background: #000;
+  border-radius: var(--radius-lg);
+}
+
+.status-bar__icons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.header-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.5rem;
+}
+
+.header-bar__back {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-1);
+  padding: var(--space-1);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.wordmark {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.wordmark__accent {
+  color: var(--text-brand-accent);
+}
+
+.tab-bar {
+  padding: var(--space-2) var(--space-4) var(--space-3);
+}
+
+.segmented-control {
+  display: flex;
+  height: 2rem;
+  border: 1px solid var(--border-on-chrome);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.segmented-control__option {
+  flex: 1;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border-on-chrome-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-on-chrome);
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-wider);
+  cursor: pointer;
+}
+
+.segmented-control__option:first-child {
+  border-left: 0;
+}
+
+.segmented-control__option[aria-selected="true"] {
+  background: var(--surface-card);
+  color: var(--surface-chrome);
+}
+
+.segmented-control__option[aria-selected="true"],
+.segmented-control__option[aria-selected="true"] + .segmented-control__option {
+  border-left-color: transparent;
+}
+
+/* -----------------------------------------------------------------------------
+   7. Content shell
+   -------------------------------------------------------------------------- */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3) var(--space-4) var(--space-2);
+  color: var(--text-primary);
+  scrollbar-width: none;
+}
+
+.app-content::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+.card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+}
+
+.card + .card,
+.card--spaced {
+  margin-top: var(--space-3);
+}
+
+.section-title {
+  margin: var(--space-4) 2px var(--space-2);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.eyebrow {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.eyebrow--tracked {
+  letter-spacing: var(--tracking-widest);
+}
+
+.row-chevron {
+  flex: none;
+  color: var(--accent-icon-muted);
+}
+
+/* Shared list container: one hairline between children, none at the edges. */
+.list > * + * {
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* --- progress bar ------------------------------------------------------------
+   Fill width comes from --progress, set by the app. Default 0% means a missing
+   value renders as empty rather than as a full bar. */
+.progress {
+  height: var(--bar-height);
+  border-radius: var(--radius-sm);
+  background: var(--surface-track);
+  overflow: hidden;
+}
+
+.progress__fill {
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  border-radius: var(--radius-sm);
+  background: var(--accent-progress);
+}
+
+/* -----------------------------------------------------------------------------
+   8. Score panel
+   -------------------------------------------------------------------------- */
+.score-card {
+  padding: var(--space-4) var(--space-4) var(--space-5);
+  text-align: center;
+}
+
+.score-card__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  color: var(--text-secondary);
+}
+
+.score-card__range {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 1.125rem;
+  margin: var(--space-3) 2px var(--space-1);
+}
+
+.score-card__bound {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+/* --marker is the score's position along the 300-850 track, set by the app. */
+.score-card__band {
+  position: absolute;
+  bottom: 0;
+  left: var(--marker, 0%);
+  transform: translateX(-50%);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.score-track {
+  position: relative;
+  height: var(--bar-height);
+  margin: 0 2px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-track);
+}
+
+.score-track__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--marker, 0%);
+  border-radius: var(--radius-sm);
+  background: var(--accent-score);
+}
+
+.score-track__tick {
+  position: absolute;
+  top: -4px;
+  left: var(--marker, 0%);
+  transform: translateX(-50%);
+  width: 3px;
+  height: 0.875rem;
+  border-radius: 2px;
+  background: var(--text-primary);
+}
+
+.score-card__value {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-display);
+  font-weight: var(--font-weight-black);
+  letter-spacing: -0.01em;
+}
+
+.score-card__updated {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.delta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-success-subtle);
+  color: var(--text-success);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.delta-pill--negative {
+  background: var(--surface-danger-subtle);
+  color: var(--text-danger);
+}
+
+/* --- factor rows --- */
+.factor-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3);
+}
+
+.factor-row__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.factor-row__label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.factor-row__driver {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.factor-row__status {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-black);
+  letter-spacing: var(--tracking-wide);
+}
+
+.factor-row__status--good {
+  color: var(--text-success);
+}
+
+.factor-row__status--watch {
+  color: var(--text-warning);
+}
+
+.factor-row__status--poor {
+  color: var(--text-danger);
+}
+
+/* -----------------------------------------------------------------------------
+   9. Milestone / unlock cards
+   -------------------------------------------------------------------------- */
+.milestone-card {
+  display: block;
+  padding: var(--space-3);
+}
+
+.milestone-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.milestone-card__title {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.milestone-card__detail {
+  margin-top: 3px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.milestone-card .progress {
+  margin-top: var(--space-3);
+}
+
+.milestone-card__scale {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.milestone-card__scale .progress {
+  flex: 1;
+  margin: 0;
+}
+
+.milestone-card__bound {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.milestone-card--unlocked {
+  background: var(--surface-success-card);
+  border-color: var(--border-success);
+}
+
+.milestone-card--unlocked .eyebrow {
+  color: var(--text-success);
+}
+
+/* The celebration mark is decoration, so it lives in CSS rather than in copy. */
+.milestone-card--unlocked .milestone-card__title::after {
+  content: " 🎉";
+}
+
+/* -----------------------------------------------------------------------------
+   10. Connect panel
+   -------------------------------------------------------------------------- */
+.page-title {
+  margin: var(--space-1) 2px 2px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-black);
+}
+
+.page-subtitle {
+  margin: 0 2px var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+}
+
+.account-row__avatar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.125rem;
+  height: 2.125rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface-card);
+  color: var(--palette-navy-800);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.account-row__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.account-row__name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.account-row__source {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.status-badge {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-success-subtle);
+  color: var(--text-success);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.connect-button {
+  padding: var(--space-1) var(--space-4);
+  border: 1.5px solid var(--accent-progress);
+  border-radius: var(--radius-pill);
+  background: var(--surface-card);
+  color: var(--text-link);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.strength-card {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+}
+
+.strength-card__value {
+  margin-top: var(--space-1);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-black);
+}
+
+.strength-card .progress {
+  margin-top: var(--space-2);
+}
+
+.strength-card__caption {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.privacy-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: 0.71875rem;
+  color: var(--text-secondary);
+}
+
+/* -----------------------------------------------------------------------------
+   11. Coach panel
+   -------------------------------------------------------------------------- */
+.coach-card {
+  padding: var(--space-4);
+}
+
+.coach-card__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-black);
+}
+
+.coach-card__body {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-snug);
+  color: var(--text-primary);
+}
+
+.coach-card__body strong {
+  font-weight: var(--font-weight-black);
+}
+
+.coach-card__subhead {
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-black);
+}
+
+.coach-card__body--tight {
+  margin-top: 0;
+}
+
+.disclosure-toggle {
+  display: inline-block;
+  margin-top: var(--space-3);
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--text-link);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.disclosure-panel {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-secondary);
+}
+
+.feedback-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+  font-size: var(--font-size-sm);
+  color: var(--text-body);
+}
+
+.feedback-button {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.feedback-button--affirm {
+  background: var(--surface-info-subtle);
+  color: var(--palette-blue-700);
+}
+
+.feedback-button--decline {
+  background: var(--surface-neutral-subtle);
+  color: var(--text-body);
+}
+
+.win-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3);
+}
+
+.win-row__delta {
+  flex: none;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-success-subtle);
+  color: var(--text-success);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-black);
+}
+
+.win-row__delta--negative {
+  background: var(--surface-danger-subtle);
+  color: var(--text-danger);
+}
+
+.win-row__label {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+/* -----------------------------------------------------------------------------
+   12. Bottom navigation
+   -------------------------------------------------------------------------- */
+.bottom-nav {
+  flex: none;
+  padding: var(--space-2) var(--space-2) 2px;
+  background: var(--surface-card);
+  border-top: 1px solid var(--border-default);
+}
+
+.bottom-nav__items {
+  display: flex;
+}
+
+.nav-item {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 0;
+  background: none;
+  border: none;
+  color: #5f6b76;
+  cursor: pointer;
+}
+
+.nav-item__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.375rem;
+  height: 1.625rem;
+  border-radius: 9px;
+}
+
+.nav-item__label {
+  font-size: var(--font-size-2xs);
+  font-weight: var(--font-weight-regular);
+}
+
+.nav-item[aria-current="page"] {
+  color: var(--text-link);
+}
+
+.nav-item[aria-current="page"] .nav-item__icon {
+  background: var(--surface-info-subtle);
+}
+
+.nav-item[aria-current="page"] .nav-item__label {
+  font-weight: var(--font-weight-medium);
+}
+
+.nav-item__badge {
+  position: absolute;
+  top: -5px;
+  right: -2px;
+  padding: 1px 5px;
+  border: 2px solid var(--surface-card);
+  border-radius: var(--radius-pill);
+  background: var(--accent-brand-dot);
+  color: var(--text-inverse);
+  font-size: 0.59375rem;
+  font-weight: var(--font-weight-black);
+}
+
+.home-indicator {
+  width: 7.75rem;
+  height: 5px;
+  margin: var(--space-2) auto var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--palette-slate-300);
+}
+
+/* -----------------------------------------------------------------------------
+   13. Cohort switcher - presenter controls, outside the phone
+   -------------------------------------------------------------------------- */
+.cohort {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 32.5rem;
+  text-align: center;
+}
+
+.cohort__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.cohort__chip {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid rgb(255 255 255 / 28%);
+  border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 12%);
+  color: #eaf1f7;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+}
+
+.cohort__chip-score {
+  margin-left: var(--space-1);
+  font-weight: var(--font-weight-black);
+}
+
+.cohort__chip[aria-pressed="true"] {
+  background: var(--surface-card);
+  border-color: var(--surface-card);
+  color: var(--surface-chrome);
+}
+
+.cohort__summary {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--text-inverse-soft);
+}
+
+.cohort__summary strong {
+  color: var(--text-inverse);
+}
+
+.data-notice {
+  font-size: var(--font-size-xs);
+  color: var(--text-inverse-muted);
+}
+
+/* -----------------------------------------------------------------------------
+   14. Responsive + motion preferences
+   -------------------------------------------------------------------------- */
+@media (max-width: 27rem) {
+  :root {
+    --radius-device: 44px;
+    --radius-screen: 36px;
+    --font-size-display: 2.375rem;
+  }
+
+  body {
+    align-items: flex-start;
+    padding: var(--space-3) var(--space-2) var(--space-6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

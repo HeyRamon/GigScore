@@ -1,0 +1,11 @@
+{
+  "ingest_id": "c26ba2dc-f040-4c7a-9e08-9d31232d60ca",
+  "ingested_at": "2026-05-13T19:05:00Z",
+  "source": "instacart",
+  "raw": {
+    "user_id": "usr_priya",
+    "batch_earnings_usd": 88.0,
+    "paid_at": "2026-05-13T19:05:00Z",
+    "batch_count": 4
+  }
+}
