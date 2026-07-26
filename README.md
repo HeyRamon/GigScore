@@ -66,13 +66,13 @@ I refactored and tested the scoring engine after the initial Launchpad sprint:
 
 - **Scoring Pipeline** (`src/gigscore/score/`): Split the 350-line monolithic `rules_engine.py` into four modular components — `scoring_config.py` (thresholds and constants), `metrics.py` (behavioral extraction), `factors.py` (level assignment), and `rules_engine.py` (orchestration). Eliminated magic strings and threshold duplication.
 
-- **Testing**: Wrote 171 unit tests in `tests/scoring/` covering metrics extraction (weekly aggregation, gap detection, rent history), factor assignment (all level boundaries and edge cases), and configuration consistency. Tests pass with zero dependencies.
+- **Testing**: Wrote 66 unit tests in `tests/scoring/` covering metrics extraction (weekly aggregation, gap detection, rent history), factor assignment (all level boundaries and edge cases), and configuration consistency. Tests pass with zero dependencies.
 
 - **Frontend**: Refactored the 885-line monolithic `app/index.html` into 7 separate files — markup, stylesheet with design tokens, view logic, configuration, and generated fallback state. Added 47 smoke tests that run in Node without a browser.
 
 - **Demo**: Split `demo/run_demo.py` into four modules — configuration, rendering, state building, and orchestration — removing duplicated strings and UI logic.
 
-Total: ~2,800 lines of refactored code, 171 passing unit tests, one v1.0 commit.
+Total: ~2,800 lines of refactored code, 66 passing unit tests, one v1.0 commit.
 
 ## Running It
 
@@ -103,7 +103,7 @@ pytest tests/scoring/ -v
 
 - `src/gigscore/` — Python backend (ingest, normalize, score, explain)
 - `app/` — CreditWise demo (HTML, CSS, JS, config, state.json)
-- `tests/scoring/` — 171 unit tests
+- `tests/scoring/` — 66 unit tests
 - `demo/` — Demo runner and data builders
 - `data/` — Sample payloads and seed data
 - `docs/` — Architecture, scoring, compliance notes
